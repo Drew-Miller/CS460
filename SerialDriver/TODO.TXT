@@ -1,0 +1,2 @@
+1. find out why inkmode does not change
+2. ask about how to putc/scroll/how to input data in the last row
