@@ -1,0 +1,5 @@
+3.  fix up the damn stacks. the string is at the top 
+	put_word(whatever token, segment, running->usp) //add length of the commands
+	put_word(the s, segment, running->usp + cmdlength) // add 2 now
+	//set up stack regularly, with offset of cmdlength + 2
+
