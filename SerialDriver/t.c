@@ -28,8 +28,6 @@ PIPE pipe[NPIPE];
 #include "kernel.c"           // YOUR kernel.c file
 #include "int.c"              // YOUR int.c    file
 #include "do_functions.c"
-#include "vid.c"
-#include "timer.c"
 #include "serial.c"
 #include "pv.c"
 
@@ -125,8 +123,6 @@ int set_vector(u16 segment, u16 handler)
             
 main()
 {
-	vid_init();
-	
     printf("MTX starts in main()\n");
     init();      // initialize and create P0 as running
     set_vector(80, int80h);
@@ -135,12 +131,8 @@ main()
 	//any other time the proc just copies this image from p1
     kfork("/bin/u1");     // P0 kfork() P1
     lock();
-    
-    set_vector(8,tinth);
-    timer_init();
 
 	set_vector(12, s0inth);
-	//set_vector(11, s1inth);
     sinit();
 
     while(1){

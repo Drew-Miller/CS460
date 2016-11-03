@@ -29,7 +29,6 @@ struct semaphore{
   PROC *queue;
 };
 
-/**** The serial terminal data structure ****/
 struct stty {
    /* input buffer */
    char inbuf[BUFLEN];

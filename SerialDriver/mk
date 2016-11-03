@@ -1,17 +1,18 @@
-VFD=FDimage
+VFD=mtximage
 
+echo compiling .....
+bcc -c -ansi t.c
 as86 -o ts.o ts.s
-bcc  -c -ansi t.c
-sudo ld86 -d -o mtx ts.o t.o mtxlib /usr/lib/bcc/libc.a
+
+echo linking .......
+ld86 -o mtx -d ts.o t.o mtxlib /usr/lib/bcc/libc.a
 
 sudo mount -o loop $VFD /mnt
 sudo cp mtx /mnt/boot
 sudo umount /mnt
-sudo rm *.o mtx
 
-#the names are interchangeable. $1 is the first variable always
-#$2 is the second variable always
-./mku u1 u2
+./mku u1;
 
+rm *.o 
 echo done
 ./q

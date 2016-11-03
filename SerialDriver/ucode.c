@@ -281,7 +281,7 @@ int sout()
 {
 	char line[64];
 	
-	printf("Enter line to send to serial: ");
-	gets(line);
-	syscall(9, line);
+	//printf("Enter line to send to serial: ");
+	//gets(line);
+	syscall(9, "serial line from umode\r\n");
 }

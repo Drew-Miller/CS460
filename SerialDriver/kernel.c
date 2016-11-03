@@ -348,7 +348,7 @@ int kitimer(int t)
 	
 	lock();
 		
-	tenqueue(myTQ);
+	//tenqueue(myTQ);
 	
 	unlock();
 }
