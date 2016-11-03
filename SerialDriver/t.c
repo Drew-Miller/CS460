@@ -30,6 +30,8 @@ PIPE pipe[NPIPE];
 #include "do_functions.c"
 #include "vid.c"
 #include "timer.c"
+#include "serial.c"
+#include "pv.c"
 
 int color;
 
@@ -112,7 +114,7 @@ int scheduler()
 	color = running->pid + 0x0A;
 }
 
-int int80h(); int tinth();
+int int80h(); int tinth(); int s0inth(); int s1inth();
 
 int set_vector(u16 segment, u16 handler)
 {
@@ -136,6 +138,10 @@ main()
     
     set_vector(8,tinth);
     timer_init();
+
+	set_vector(12, s0inth);
+	//set_vector(11, s1inth);
+    sinit();
 
     while(1){
       printf("P0 running\n");

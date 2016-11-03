@@ -13,6 +13,7 @@ typedef unsigned long  u32;
 #define STOPPED  3
 #define SLEEP    4
 #define ZOMBIE   5
+#define BLOCK	 6
 
 #define READ_PIPE  4
 #define WRITE_PIPE 5
@@ -62,3 +63,5 @@ typedef struct tq{
 	PROC		*p;			//pointer to PROC
 	int			(*action)();	//0|1|handler function pointer
 }TQE;
+
+

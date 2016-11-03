@@ -2,7 +2,7 @@
 
 
 char *cmd[]={"pid", "ps", "chname", "fork", "switch", "wait", "exit", "kmode", "exec",
-				"pipe", "pfd", "read", "write", "close","itimer","getc", "putc", 0};
+				"pipe", "pfd", "read", "write", "close","itimer","sin", "sout", 0};
 int pd[2];
 int getc();
 void putc(char c);
@@ -13,6 +13,7 @@ int show_menu()
    printf("***************** Menu ****************************\n");
    printf("*  ps kmode chname  fork  switch  wait exec  exit *\n");
    printf("*  pipe  pfd  read  write  close  itimer          *\n");
+   printf("*  sin   sout                                     *\n");
    printf("***************************************************\n");
 }
 
@@ -267,4 +268,20 @@ int itimer()
 	t = myAtoi(s);
 	syscall(35, t, 0);
 	return t;
+}
+
+int sin()
+{
+	char line[64];
+	syscall(10,line, 0);
+	printf("line=%d\n", line);
+}
+
+int sout()
+{
+	char line[64];
+	
+	printf("Enter line to send to serial: ");
+	gets(line);
+	syscall(9, line);
 }

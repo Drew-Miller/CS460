@@ -352,3 +352,53 @@ int kitimer(int t)
 	
 	unlock();
 }
+
+int ksin(char *s)
+{
+	int length, i = 0;
+    char line[64], *msgp, *msg = "\n\rString? \n\r\007";
+    
+    // get the message
+    msgp = msg;
+    while (*msgp)
+    {
+        bputc(0x3F8, *msgp);
+        msgp++;
+    }
+    
+    sgetline(0, line);
+    
+    while(line[i] != '\0')
+    {
+		put_byte(line[i], running->uss, s++);
+		i++;
+	}
+	
+	put_byte(0, running->uss, s);
+	
+	return i;
+}
+
+int ksout(char *s)
+{
+	int i = 0;
+	char c;
+	char line[64], *msgp, *msg = "\n\rInput: \n\r\007";
+    
+    msgp = msg;
+    while (*msgp)
+    {
+        bputc(0x3F8, *msgp);
+        msgp++;
+    }
+    
+	while(c = get_byte(running->uss, s++))
+	{
+		line[i++]  = c;
+	}
+	
+	line[i] = 0;
+	sputline(0, line);
+	
+	return (i-1);
+}

@@ -26,6 +26,9 @@ int kcinth()
        case 6 : r = kkexit(b);      	break;
        case 7 : r = fork();         	break;
        case 8 : r = kexec(b);       	break; 
+       
+	   case 9 : r = ksout(b);        	break;
+	   case 10: r = ksin(b);         	break;
         
        case 30: r = kpipe(b);			break;
        case 31: r = read_pipe(b,c,d);	break;

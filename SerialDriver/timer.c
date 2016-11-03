@@ -12,11 +12,7 @@
 u16 tick;
 u16 seconds;
 
-int enable_irq(u16 irq_nr)
-{
-  lock();
-    out_byte(0x21, in_byte(0x21) & ~(1 << irq_nr));
-}
+int enable_irq(u16 irq_nr);
 
 int timer_init()
 {

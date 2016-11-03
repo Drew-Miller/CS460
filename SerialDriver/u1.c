@@ -51,6 +51,10 @@ main(int argc, char *argv[])
 		   case 12: write_pipe();		break;
 		   case 13: close_pipe();		break;
 		   case 14: itimer();			break;
+		   
+		   case 15: sin();				break;
+		   case 16: sout();				break;
+
 
            default: invalid(name); 		break;
     }
