@@ -324,10 +324,7 @@ int sputline(int port, char *line)
   char c = 0;
   struct stty *tty = &stty[port];
   
-  while(c = sputc(tty, *line++))
-  {
-	bputc(tty->port, c);  
-  }
+  while(c = sputc(tty, *line++));
   
   bputc(tty->port, '\n');
 }
