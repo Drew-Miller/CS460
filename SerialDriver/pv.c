@@ -1,3 +1,4 @@
+
 void block(struct semaphore *s)
 {
 	running->status = BLOCK;

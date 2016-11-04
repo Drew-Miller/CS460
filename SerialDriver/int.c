@@ -29,14 +29,6 @@ int kcinth()
        
 	   case 9 : r = ksout(b);        	break;
 	   case 10: r = ksin(b);         	break;
-        
-       case 30: r = kpipe(b);			break;
-       case 31: r = read_pipe(b,c,d);	break;
-       case 32: r = write_pipe(b,c,d);	break;
-	   case 33: r = close_pipe(b);		break;
-	   case 34: r = pfd();				break;
-	   case 35:	r = kitimer(b);			break;
-       
        
        case 90: r = kgetc();         	break;
        case 91: r = kputc(b);        	break; 

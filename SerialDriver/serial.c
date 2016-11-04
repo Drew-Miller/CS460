@@ -29,6 +29,7 @@ struct semaphore{
   PROC *queue;
 };
 
+
 struct stty {
    /* input buffer */
    char inbuf[BUFLEN];
@@ -194,7 +195,7 @@ enable_tx(struct stty *t)
 
 disable_tx(struct stty *t)
 { 
-   lock();
+  lock();
   out_byte(t->port+IER, 0x01);   /* 0001 ==> tx off, rx on */
   t->tx_on = 0;
   unlock();
@@ -205,7 +206,7 @@ int echo(struct stty *tty, int c)
 {
 	lock();
 	
-	printf("ECHO:%c\n", c);
+	printf("%c\n", c);
 	
 	unlock();
 	
@@ -242,7 +243,7 @@ int do_rx(struct stty *t)
   t->inbuf[t->inhead++] = c;
   t->inhead %= BUFLEN;
   unlock();
-  
+    
   V(&t->inchars);
 }      
  
@@ -256,8 +257,14 @@ int sgetc(struct stty *tty)
     //get a char c from inbuf[ ]
 	lock();
 	c = tty->inbuf[tty->intail++];
-	tty->intail = tty->intail % BUFLEN;
+	tty->intail %= BUFLEN;
+	
 	unlock();
+	
+	if(!tty->tx_on)
+	{
+		enable_tx(tty);
+	}
  
     return c;
 }
@@ -266,19 +273,18 @@ int sgetc(struct stty *tty)
 int sgetline(int port, char *line)
 {
 	int i = 0;
-	char c = 0;
+	int c = 0;
 	struct stty *tty = &stty[port];
-	
+			
 	//while we do not have a null character
-	while((c = sgetc(tty)) != '\r')
+	while((c = bgetc(tty->port)) != '\r')
 	{
-		*line = c;
-		line++;
+		*(line + i) = c;
+		i++;
 	}
 	
-	line--;
-	line = '\0';
-	
+	*(line+i) = '\0';
+		
 	return strlen(line);
 }
 
@@ -292,7 +298,8 @@ int do_tx(struct stty *t)
 	   disable_tx(t);
 	   return;
    }
-   
+      
+   enable_tx(t);
    c = t->outbuf[t->outtail++];
    t->outtail %= BUFLEN;
    bputc(t->port, c);
@@ -309,12 +316,13 @@ int sputc(struct stty *tty, char c)
 	tty->outbuf[tty->outhead++] = c;
 	tty->outhead %= BUFLEN;
 	
+	unlock();
+
 	if(!tty->tx_on)
 	{
 		enable_tx(tty);
 	}
 	
-	unlock();
 	
 	return c;
 }
@@ -324,48 +332,8 @@ int sputline(int port, char *line)
   char c = 0;
   struct stty *tty = &stty[port];
   
-  while(c = sputc(tty, *line++))
-  {
-	bputc(tty->port, c);  
-  }
+  while(c = sputc(tty, *line++));
   
   bputc(tty->port, '\n');
 }
 
-//**************** Syscalls from Umode ************************
-int usgets(int port, char *y)
-{  
-	struct stty *tty = &stty[port];
-	char line[64];	
-    int i = 0;
-    int n = 0; 
-    n = sgetline(tty, line);   // Get line from serial port and store in inline 
-
-    while(i < strlen(line))
-    {
-      put_byte(line[i], running->uss, y); 
-      i++; 
-      y++; 
-    }
-
-    return n;
-}
-
-int uputs(int port, char *y)
-{
-	char outline[64];
-    char c; 
-    int i = 0;
-    struct stty *tty = &stty[port];
-     
-    while((c = get_byte(running->uss, y)) != NULL)
-    {
-		y++; 
-		outline[i++] = c; 
-    }
-
-    outline[i] = '\0';         // Add null terminator 
-    sputline(tty, outline);   // Output line to serial port 
-
-	return i - 1;
-}

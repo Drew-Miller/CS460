@@ -337,26 +337,15 @@ int kputc(char c)
 	putc(c);
 }
 
-int kitimer(int t)
-{
-	TQE* myTQ;
-	PROC *procPtr;
-		
-	myTQ = &tqe[running->pid];
-	myTQ->p = running;
-	myTQ->time = t;
-	
-	lock();
-		
-	//tenqueue(myTQ);
-	
-	unlock();
-}
 
 int ksin(char *s)
 {
 	int length, i = 0;
+	char *s2;
+	char c;
     char line[64], *msgp, *msg = "\n\rString? \n\r\007";
+    
+    s2 = s;
     
     // get the message
     msgp = msg;
@@ -368,13 +357,18 @@ int ksin(char *s)
     
     sgetline(0, line);
     
+    printf("line:%s\n", line);
+        
     while(line[i] != '\0')
     {
-		put_byte(line[i], running->uss, s++);
+		printf("%c\n", line[i]);
+		put_byte(line[i], running->uss, s2++);
 		i++;
 	}
 	
-	put_byte(0, running->uss, s);
+	//put_byte('\0', running->uss, s2);
+	
+	printf("s:%s\n", s);
 	
 	return i;
 }

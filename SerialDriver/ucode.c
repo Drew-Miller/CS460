@@ -270,9 +270,9 @@ int itimer()
 	return t;
 }
 
+char line[64];
 int sin()
 {
-	char line[64];
 	syscall(10,line, 0);
 	printf("line=%d\n", line);
 }
