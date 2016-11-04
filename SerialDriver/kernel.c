@@ -356,20 +356,16 @@ int ksin(char *s)
     }
     
     sgetline(0, line);
-    
-    printf("line:%s\n", line);
-        
+    printf("b\n");
+            
     while(line[i] != '\0')
     {
-		printf("%c\n", line[i]);
 		put_byte(line[i], running->uss, s2++);
 		i++;
 	}
 	
-	//put_byte('\0', running->uss, s2);
-	
-	printf("s:%s\n", s);
-	
+	put_byte('\0', running->uss, s2);
+		
 	return i;
 }
 

@@ -270,18 +270,16 @@ int itimer()
 	return t;
 }
 
-char line[64];
 int sin()
 {
+	char line[64];
 	syscall(10,line, 0);
-	printf("line=%d\n", line);
+	printf("uline=%s\n", line);
 }
 
 int sout()
 {
 	char line[64];
 	
-	//printf("Enter line to send to serial: ");
-	//gets(line);
 	syscall(9, "serial line from umode\r\n");
 }

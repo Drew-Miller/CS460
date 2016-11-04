@@ -252,15 +252,13 @@ int sgetc(struct stty *tty)
 { 
 	int c;
     //WAIT FOR input char;
+    enable_tx(tty);
     P(&tty->inchars);
     
     //get a char c from inbuf[ ]
-	lock();
 	c = tty->inbuf[tty->intail++];
 	tty->intail %= BUFLEN;
-	
-	unlock();
-	
+		
 	if(!tty->tx_on)
 	{
 		enable_tx(tty);
@@ -276,8 +274,9 @@ int sgetline(int port, char *line)
 	int c = 0;
 	struct stty *tty = &stty[port];
 			
+
 	//while we do not have a null character
-	while((c = bgetc(tty->port)) != '\r')
+	while((c = sgetc(tty)) != '\r')
 	{
 		*(line + i) = c;
 		i++;
@@ -299,10 +298,9 @@ int do_tx(struct stty *t)
 	   return;
    }
       
-   enable_tx(t);
    c = t->outbuf[t->outtail++];
    t->outtail %= BUFLEN;
-   bputc(t->port, c);
+   out_byte(t->port, c);
    
    V(&t->outspace);
 }

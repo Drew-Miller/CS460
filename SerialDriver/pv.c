@@ -3,7 +3,11 @@ void block(struct semaphore *s)
 {
 	running->status = BLOCK;
 	enqueue(&s->queue, running);
-	tswitch();
+	while(running->status != READY)
+	{
+		
+	}
+	//tswitch();
 }
 
 void signal(struct semaphore *s)
