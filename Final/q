@@ -1,4 +1,14 @@
-qemu-system-i386 -hda vdisk -m 520M -smp $1 -serial /dev/pts/5 -serial /dev/pts/11 \
-#-parallel /dev/pts/12 -localtime -cdrom MTXinstallCD.iso #-boot d
+#./mku login
+#./mku init
+./mku sh
+
+#PROGRAMS
+#./mku cat
+#./mku more
+#./mku l2u
+./mku cp
+
+qemu-system-i386 -hda vdisk -m 520M -smp 2 -serial /dev/pts/17 
+-parallel /dev/pts/12 -localtime -cdrom MTXinstallCD.iso #-boot d
 
 

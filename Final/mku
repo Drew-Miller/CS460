@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [ $# \< 1 ]; then echo Usage: mku filename; exit; fi
 
 # default partiton = 1
@@ -7,7 +6,7 @@ PARTITION=1
 if [ $# \> 1 ]; then PARTITION=$2; fi
 
 VDISK=vdisk
-SECTOR=$(ptable vdisk $PARTITION)
+SECTOR=$(./ptable vdisk $PARTITION)
 OFFSET=$(expr $SECTOR \* 512)
 
 echo partition=$PARTITION sector=$SECTOR offset=$OFFSET
