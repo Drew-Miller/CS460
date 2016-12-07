@@ -31,4 +31,6 @@ char *combine(char **args);
 char *redirectCombine(char **args, int n);
 int redirect(char *args[]);
 
+void writeOver(char c, int in, int red);
+
 char *commands[] = {"exit", "logout", "cd", "ls", "cat", "grep", "cp", "l2u", "more", "rm"};

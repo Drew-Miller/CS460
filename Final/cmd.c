@@ -1,5 +1,8 @@
 #include "miller.h"
 	
+int stdin = STDIN;
+int stdout = STDOUT;
+
 int findCmd(char *cmd)
 {
 	int i = 0;
@@ -117,4 +120,93 @@ char *redirectCombine(char **args, int n)
 	}
 		
 	return s;
+}
+
+void writeOver(char c, int in, int red)
+{
+	char arr[1];
+	arr[0] = c;
+	
+	//if stdin is reg
+	if(in == 0)
+	{
+		//if we are not redirected
+		//write straight to console
+		if(red == 0)
+		{
+			if(c == '\r')
+			{
+				write(2, "\r\n", 2);
+			}
+			
+			
+			//not a enter character
+			else
+			{
+				write(2, arr, 1);
+			}
+		}
+		
+		//if we have a redirected output to a file
+		else
+		{
+			//if we have an enter character
+			if(c == '\r')
+			{
+				write(1, "\n", 1);
+				write(2, "\r\n", 2);
+			}
+			
+			else
+			{
+				write(1, arr, 1);
+				write(2, arr, 1);
+			}
+		}
+	}
+	
+	//if stdin in is a file
+	else
+	{
+		//if we are not redirected
+		//write straight to console
+		if(red == 0)
+		{
+			if(c == '\n')
+			{
+				write(2, "\r\n", 2);
+			}
+			
+			else
+			{
+				write(2, arr, 1);
+			}
+		}
+		
+		//if we are writing out to a file
+		else
+		{
+			write(1, arr, 1);
+		}
+	}
+}
+
+//returns 1 if writing to file
+//0 if not.
+int isRedirect()
+{
+	STAT *s = (STAT*)malloc(sizeof(stat));
+
+	//receive the stats from stdout
+	fstat(STDOUT, s);
+
+	//if the stat of STDOUT is a file
+	if ((s->st_mode & 0xF000) == 0x8000 || (s->st_mode & 0xF000) == 0x4000 || (s->st_mode & 0xF000) == 0xA000) 
+	{
+
+		//we do have a redirect
+		return 1;
+	}
+
+	return 0;
 }

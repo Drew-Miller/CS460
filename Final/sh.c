@@ -86,10 +86,7 @@ int executeInput(char **args)
 int redirect(char **args)
 {
 	int i = 1;
-	
-	stdin = 70;
-	stdout = 71;
-	
+		
 	if(strcmp(args[1], 0) == 0) { return -1; }
 	
 	while(strcmp(args[i], 0) != 0)
@@ -97,21 +94,21 @@ int redirect(char **args)
 		if(strcmp(args[i], "<") == 0)
 		{
 			close(0);
-			stdin = open(args[i+1], O_RDONLY);
+			open(args[i+1], O_RDONLY);
 			return i;
 		}
 	
 		else if(strcmp(args[i], ">") == 0)
 		{
 			close(1);
-			stdout = open(args[i+1], O_WRONLY|O_CREAT);
+			open(args[i+1], O_WRONLY|O_CREAT);
 			return i;
 		}
 	
 		else if(strcmp(args[i], ">>") == 0)
 		{
 			close(1);
-			stdout = open(args[i+1], O_APPEND|O_WRONLY|O_CREAT);	
+			open(args[i+1], O_APPEND|O_WRONLY|O_CREAT);	
 			return i;
 		}
 		

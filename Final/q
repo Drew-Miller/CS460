@@ -4,10 +4,10 @@
 
 #PROGRAMS
 ./mku cat
-#./mku more
-#./mku l2u
-#./mku cp
-#./mku grep
+./mku more
+./mku l2u
+./mku cp
+./mku grep
 
 qemu-system-i386 -hda vdisk -m 520M -smp 2 -serial /dev/pts/17 
 -parallel /dev/pts/12 -localtime -cdrom MTXinstallCD.iso #-boot d
