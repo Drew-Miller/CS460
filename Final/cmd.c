@@ -1,7 +1,4 @@
 #include "miller.h"
-
-int stdin = STDIN;
-int stdout = STDOUT;
 	
 int findCmd(char *cmd)
 {
@@ -94,6 +91,26 @@ char *combine(char **args)
 		strcat(s, args[i++]);
 		
 		if(args[i])
+		{
+			strcat(s, " ");
+		}
+	}
+		
+	return s;
+}
+
+char *redirectCombine(char **args, int n)
+{
+	char s[CMD_BUF];
+	int i = 0;
+	
+	strcpy(s, "");
+				
+	while(i < n && strcmp(args[i], 0) != 0)
+	{
+		strcat(s, args[i++]);
+		
+		if(i + 1 <= n)
 		{
 			strcat(s, " ");
 		}

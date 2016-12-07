@@ -19,12 +19,16 @@ int parent();
 
 int runCmd();
 
+extern int stdin;
+extern int stdout;
+
 char convert(char input);
 
 int executeInput(char *args[]);
 
 int splitCmd(char *arr[], char *cmd);
-char *combine(char *args[]);
+char *combine(char **args);
+char *redirectCombine(char **args, int n);
 int redirect(char *args[]);
 
 char *commands[] = {"exit", "logout", "cd", "ls", "cat", "grep", "cp", "l2u", "more", "rm"};

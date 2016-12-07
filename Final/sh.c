@@ -5,7 +5,6 @@ char currentDir[STD_BUF];
 char input[CMD_BUF];
 char cmd[CMD_BUF];
 
-
 main(int argc, char *argv[ ])
 {		
 	while(1)
@@ -71,9 +70,11 @@ int executeInput(char **args)
 {
 	int i, n = 0;
 		
-	if(n = redirect(args))
+	n = redirect(args);
+	
+	if(n != -1)
 	{
-		exec(args[0]);
+		exec(redirectCombine(args, n));
 	}
 	
 	else
@@ -84,28 +85,38 @@ int executeInput(char **args)
 
 int redirect(char **args)
 {
-	if(strcmp(args[1], 0) == 0) { return 0; }
+	int i = 1;
 	
-	if(strcmp(args[1], "<") == 0)
+	stdin = 70;
+	stdout = 71;
+	
+	if(strcmp(args[1], 0) == 0) { return -1; }
+	
+	while(strcmp(args[i], 0) != 0)
 	{
-		close(0);
-		stdin = open(args[2], O_RDONLY);
-		return 1;
+		if(strcmp(args[i], "<") == 0)
+		{
+			close(0);
+			stdin = open(args[i+1], O_RDONLY);
+			return i;
+		}
+	
+		else if(strcmp(args[i], ">") == 0)
+		{
+			close(1);
+			stdout = open(args[i+1], O_WRONLY|O_CREAT);
+			return i;
+		}
+	
+		else if(strcmp(args[i], ">>") == 0)
+		{
+			close(1);
+			stdout = open(args[i+1], O_APPEND|O_WRONLY|O_CREAT);	
+			return i;
+		}
+		
+		i++;
 	}
 	
-	else if(strcmp(args[1], ">") == 0)
-	{
-		close(1);
-		stdout = open(args[2], O_WRONLY|O_CREAT);
-		return 1;
-	}
-	
-	else if(strcmp(args[1], ">>") == 0)
-	{
-		close(1);
-		stdout = open(args[2], O_APPEND|O_WRONLY|O_CREAT);	
-		return 1;
-	}
-	
-	return 0;
+	return -1;
 }

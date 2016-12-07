@@ -1,9 +1,14 @@
 #include "ucode.c"
 #include "cmd.c"
 
+void writeOver(char c);
+void writeConsole(char c);
+void writeOut(char c);
+
 int main(int argc, char *argv[])
 {
 	char c[1];
+	printf("STDOUT:%d\nSTDIN:%d\n", stdout, stdin);
 	
 	//otherwise, if we have multiple arguments
 	//passed in, the file can be opened to cat
@@ -19,55 +24,78 @@ int main(int argc, char *argv[])
 		printf("FILE did not open properly.\n");
 		return -1;
 	}
-		
-	//read returns amount of bytes read.
-	//as long as the value is not 0, we loop
-	//the read function.
-	//THIS IS FOR A FILE
-	if(argc > 1)
+			
+	while(read(stdin, c, 1))
 	{
-		while(read(stdin, c, 1))
-		{
-			putc(c[0]);
-			
-			if(c[0] == '\n')
-			{
-				putc('\r');
-			}
+		if(c[0] == '~')
+		{	
+			writeConsole('\r');
+			exit(1);	
+			break;
 		}
+
+		writeOver(c[0]);
 	}
 	
-	//THIS IS FOR STDIN
-	else
-	{		
-		while(read(stdin, c, 1))
-		{
-			//cannot use print here.
-			//must use putc BECAUSE
-			//printf allows only output to
-			//sh. PUTC writes to the tty structure
-			//allowing us to pipe the output if
-			//needed.		
-			switch(c[0])
-			{
-				case '\r': 
-					putc('\n');
-					write(2, "\n", 1);	
-					break;
-					
-				case '~': 	
-					write(2, "\n", 1);
-					exit(1);	
-					break;
-			}
-			
-			write(2, c, 1);
-			putc(c[0]);
-		}
-	}
-	
-	putc('\n');
 	close(stdin);
 	
 	return 0;
+}
+
+void writeOver(char c)
+{			
+	//writing to stdout
+	if(stdout == STDOUT)
+	{
+		writeConsole(c);
+	}
+	
+	//writing to file
+	else
+	{	
+		if(stdin == STDIN)
+		{
+			writeConsole(c);
+		}
+
+		writeOut(c);
+	}
+}
+
+//use this for writing to out
+void writeConsole(char c)
+{
+	char arr[1];
+	arr[0] = c;
+		
+	if(c == '\r' && stdin == STDIN)
+	{
+		write(stdout, "\r\n", 2);
+	}
+	
+	else if(c == '\n' && stdin != STDIN)
+	{
+		write(stdout, "\r\n", 2);
+	}
+	
+	else
+	{
+		write(stdout, arr, 1);	
+	}
+}
+
+void writeOut(char c)
+{
+	char arr[1];
+	arr[0] = c;
+	
+	if(c == '\r' && stdin == STDIN)
+	{
+		putc('\n');
+	}
+	
+	else
+	{
+		putc(c);
+	}
 }

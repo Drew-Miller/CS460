@@ -11,9 +11,9 @@ main(int argc, char *argv[])
 		
 	int i = 0;
 	
-	open("/dev/tty0", O_RDONLY);
-	open("/dev/tty0", O_WRONLY);
-	 
+	stdin = open("/dev/tty0", O_RDONLY);
+	stdout = open("/dev/tty0", O_WRONLY);
+		 
     printf("MILLER-INIT : fork a login task on console\n"); 
     
     for(i = 0; i < CHILD_AMOUNT; i++)
