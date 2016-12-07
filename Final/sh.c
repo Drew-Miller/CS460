@@ -72,25 +72,26 @@ int runCmd()
 
 int executeInput(char **args)
 {
-	int i = 0;
+	int i, n = 0;
 	
 	printf("ex\n");
 	
-	if(redirect(args))
+	if(n = redirect(args))
 	{
-		printf("args[0]:%s\n", args[0]);
-		//exec(args[0]);
+		exec(args[0]);
 	}
 	
 	else
 	{
-		printf("else\n");
 		exec(combine(args));
 	}
 }
 
 int redirect(char **args)
 {
+	int stdin = STDIN;
+	int stdout = STDOUT;
+	
 	printf("r\n");
 	
 	printf("1:%s. 2:%s. 3:%s.\n", args[0], args[1], args[2]);
@@ -100,16 +101,15 @@ int redirect(char **args)
 	if(strcmp(args[1], "<") == 0)
 	{
 		close(0);
-		open(args[2], O_RDONLY);
-		//dup2(stdin, STDIN);
+		stdin = open(args[2], O_RDONLY);
+		dup2(stdin, STDIN);
 		return 1;
 	}
 	
 	else if(strcmp(args[1], ">") == 0)
 	{
 		close(1);
-				printf("asdf\n");
-		open(args[2], O_WRONLY|O_CREAT);
+		stdout = open(args[2], O_WRONLY|O_CREAT);
 		//dup2(stdout, STDOUT);
 		return 1;
 	}
@@ -117,8 +117,8 @@ int redirect(char **args)
 	else if(strcmp(args[1], ">>") == 0)
 	{
 		close(1);
-		open(args[2], O_APPEND|O_WRONLY|O_CREAT);	
-		//dup2(stdout, STDIN);
+		stdout = open(args[2], O_APPEND|O_WRONLY|O_CREAT);	
+		dup2(stdout, STDIN);
 		return 1;
 	}
 	

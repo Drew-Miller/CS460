@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 			//needed.		
 			switch(c[0])
 			{
-				case '\r': putc('\n'); 	break;
+				case '\r': putc('\n'); 				break;
 				case '~': putc('\n'); exit(1);		break;
 			}
 			
