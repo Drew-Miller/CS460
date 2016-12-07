@@ -3,23 +3,26 @@
 
 int main(int argc, char *argv[])
 {
-	int f1 = STDIN;
-	int f2 = STDOUT;
+	char c[1];
 	
-	int r, i;
-	char c[0];
-		
-		
-	//makes file capital
+	//1 is for redirected in
+	//0 is for reg in
+	int in = 0;
+	int red = isRedirect();
+	
+	int f1, f2 = 0;
+	
+	//otherwise, if we have multiple arguments
+	//passed in, the file can be opened to cat
 	if(argc == 2)
 	{
+		in = 1;
 		f1 = open(argv[1], O_RDONLY);
 	}
-		
-	//case you need to write to a different file
-	//can use open create to create a file if need be
+	
 	else if(argc == 3)
 	{
+		in = 1;
 		f1 = open(argv[1], O_RDONLY);
 		f2 = open(argv[2], O_WRONLY | O_CREAT);
 	}
@@ -29,38 +32,28 @@ int main(int argc, char *argv[])
 		printf("File(s) not opened correctly.\nExiting...\n");
 		return -1;
 	}
-	
-	
-	//read all input from file
-	while(read(f1, c, 1))
-	{
-		if(f1 == STDIN && c[0] == '~') { break;}
-		
-		c[0] = convert(c[0]);
-		
-		//if we are writing to a file
-		if(f2 != STDOUT)
-		{
-			write(f2, c, 1);
-		}
-		
-		//if we are writing to stdout
-		else
-		{
-			putc(c[0]);
 			
-			if(c[0] == '\r')
-			{
-				putc('\n');
-			}					
+	//if the file did NOT open properly
+	//the return of fd is less than 0
+	if(stdin < 0)
+	{
+		printf("FILE did not open properly.\n");
+		return -1;
+	}
+		
+	while(read(stdin, c, 1))
+	{
+		if(c[0] == '~')
+		{
+			writeOver('\r', in, red);
+			close(STDIN);
+			exit(0);
 		}
+		
+		writeOver(c[0], in, red);
 	}
 	
-	putc('\n');
-	close(f1);
-	close(f2);
-	
-	return 0;
+	exit(0);
 }
 
 char convert(char input)
