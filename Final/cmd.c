@@ -1,5 +1,8 @@
 #include "miller.h"
 
+int stdin = STDIN;
+int stdout = STDOUT;
+	
 int findCmd(char *cmd)
 {
 	int i = 0;

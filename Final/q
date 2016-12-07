@@ -3,7 +3,7 @@
 ./mku sh
 
 #PROGRAMS
-#./mku cat
+./mku cat
 #./mku more
 #./mku l2u
 #./mku cp

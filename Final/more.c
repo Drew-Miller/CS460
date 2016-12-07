@@ -27,8 +27,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	
-	printf("----MILLER MORE----\n\n");
-	
 	//read returns amount of bytes read.
 	//as long as the value is not 0, we loop
 	//the read function.

@@ -35,9 +35,7 @@ int runCmd()
 	splitCmd(args, cmdCpy);
 	
 	cmdIndex = findCmd(args[0]);
-	
-	printf("cmdIndex:%d %s.\n", cmdIndex, args[0]);
-			
+				
 	if(cmdIndex == 0 || cmdIndex == 1)
 	{
 		logout(0);
@@ -63,8 +61,7 @@ int runCmd()
 		//child process
 		else
 		{			
-			executeInput(args);
-			
+			executeInput(args);	
 			exit(0);
 		}
 	}
@@ -73,9 +70,7 @@ int runCmd()
 int executeInput(char **args)
 {
 	int i, n = 0;
-	
-	printf("ex\n");
-	
+		
 	if(n = redirect(args))
 	{
 		exec(args[0]);
@@ -89,20 +84,12 @@ int executeInput(char **args)
 
 int redirect(char **args)
 {
-	int stdin = STDIN;
-	int stdout = STDOUT;
-	
-	printf("r\n");
-	
-	printf("1:%s. 2:%s. 3:%s.\n", args[0], args[1], args[2]);
-	
 	if(strcmp(args[1], 0) == 0) { return 0; }
 	
 	if(strcmp(args[1], "<") == 0)
 	{
 		close(0);
 		stdin = open(args[2], O_RDONLY);
-		dup2(stdin, STDIN);
 		return 1;
 	}
 	
@@ -110,7 +97,6 @@ int redirect(char **args)
 	{
 		close(1);
 		stdout = open(args[2], O_WRONLY|O_CREAT);
-		//dup2(stdout, STDOUT);
 		return 1;
 	}
 	
@@ -118,7 +104,6 @@ int redirect(char **args)
 	{
 		close(1);
 		stdout = open(args[2], O_APPEND|O_WRONLY|O_CREAT);	
-		dup2(stdout, STDIN);
 		return 1;
 	}
 	
