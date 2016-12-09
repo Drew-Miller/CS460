@@ -23,6 +23,7 @@ main(int argc, char *argv[ ])
 int runCmd()
 {
 	int pid;
+	int pp;
 	int status;
 	int cmdIndex;
 	char *args[STD_BUF];
@@ -59,10 +60,112 @@ int runCmd()
 		
 		//child process
 		else
-		{			
-			executeInput(args);	
-			exit(0);
+		{	
+			pp = hasPipe(args);
+			
+			if(pp < 0)
+			{	
+				executeInput(args);	
+				exit(0);
+			}
+			
+			else
+			{
+				i = 0;
+				
+				executePipe(args);
+			}
 		}
+	}
+}
+
+int hasPipe(char *args[])
+{
+	int i = 0;
+	while(strcmp(args[i], 0) != 0)
+	{
+		if(strcmp(args[i], "|") == 0)
+		{
+			return i;
+		}
+		
+		i++;
+	}
+	
+	return -1;
+}
+
+int executePipe(char *args[])
+{
+	int pd[2];
+	int i = 0;
+	int j = 0;
+	int pid;
+	char head[CMD_BUF];
+	char tail[CMD_BUF];
+	char combined[CMD_BUF];
+	char *token;
+	char *hBuf[STD_BUF];
+	char *tBuf[STD_BUF];
+			
+	i = 0;
+	strcpy(combined, combine(args));
+	
+	//get head	
+	token = strtok(combined, "|");
+	strcpy(head, trimN(token));
+	
+	//get tail	
+	token = strtok(0, "");
+	strcpy(tail, trimN(token));
+	
+	pipe(pd);
+	
+	pid = fork();
+	
+	//PAPA is head
+	if(pid)
+	{
+		splitCmd(hBuf, head);
+		
+		//set up the head pipe
+		//close stdout, use our pipe for out
+		//close end of pipe
+		close(pd[0]);
+		close(1);
+		dup2(pd[1], 1);
+		
+		executeInput(hBuf);
+	}
+	
+	else
+	{
+		splitCmd(tBuf, tail);
+		
+		//set up the tail pipe
+		//close stdin, use our pipe for out
+		//close end of pipe
+		close(pd[1]);
+		close(0);
+		dup2(pd[0], 0);
+
+		//if the tail has a pipe as well
+		if(hasPipe(tBuf) > -1)
+		{
+			executePipe(tBuf);
+		}
+		
+		//if we do not have a pipe
+		//just execute it
+		else
+		{
+			//close(1);
+			//open("/dev/tty0", O_WRONLY);
+			
+			executeInput(tBuf);
+		}
+		
+		exit(1);
 	}
 }
 

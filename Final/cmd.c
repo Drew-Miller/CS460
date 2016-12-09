@@ -35,7 +35,7 @@ int getLine(int fd, char *buf, int len)
 	char c = 0;
 	int i = 0;
 	char b[1];
-	int l = -1;
+	int l = 0;
 	
 	b[0] = 0;
 	
@@ -47,23 +47,23 @@ int getLine(int fd, char *buf, int len)
 		}
 		
 		c = b[0];
-		
-		//if we read a null character
+				
+		//if we read an enter character
 		if(c == '\r' || c == '\n')
 		{
-			buf[l] = 0;
-			return l;
+			buf[l++] = 0;
+			break;
 		}
 		
 		buf[l] = c;
 		
 		l++;
 	}
-	
+		
 	return l;
 }
 
-int splitCmd(char **arr, char *cmd)
+int splitCmd(char *arr[], char *cmd)
 {
 	char cmdCpy[CMD_BUF];
 	char *tmp;
@@ -209,4 +209,19 @@ int isRedirect()
 	}
 
 	return 0;
+}
+
+char *trimN(char *s)
+{
+	int i = 0;
+	
+	while(s[i] != '\0')
+	{
+		i++;
+	}
+	
+	if(s[i - 1] == ' ') { s[i - 1] = 0; }
+	if(s[0] == ' ') { s++; }
+	
+	return s;
 }

@@ -7,6 +7,8 @@ int main(int argc, char *argv[])
 	
 	//1 is for redirected in
 	//0 is for reg in
+	int i = 0;
+	char input;
 	int in = 0;
 	int red = isRedirect();
 	
@@ -28,6 +30,26 @@ int main(int argc, char *argv[])
 		
 	while(read(stdin, c, 1))
 	{
+		if(i > 20)
+		{
+			input = getc();
+			
+			if(input == ' ')
+			{
+				i = 0;
+			}
+			
+			else if(input == '\r')
+			{
+				i--;
+			}
+			
+			else if(input == '~')
+			{
+				exit(0);
+			}
+		}
+		
 		if(c[0] == '~')
 		{
 			writeOver('\r', in, red);
@@ -36,6 +58,12 @@ int main(int argc, char *argv[])
 		}
 		
 		writeOver(c[0], in, red);
+		
+		
+		if(c[0] == '\n' || c[0] == '\r')
+		{
+			i++;
+		}
 	}
 	
 	exit(0);

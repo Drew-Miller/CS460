@@ -3,40 +3,56 @@
 
 int main(int argc, char *argv[])
 {
-	int fd = STDIN;
-	int n = 0;
-	char inBuf[LARGE_BUF];
-	char pattern[STD_BUF];
+	char c[1];
 	
+	//1 is for redirected in
+	//0 is for reg in
+	int in = 0;
+	int n = 0;
+	int i = 0;
+	int red;
+	char pattern[STD_BUF];
+	char inBuf[LARGE_BUF];
+	int passOver = 1;
+	
+	//otherwise, if we have multiple arguments
+	//passed in, the file can be opened to cat
 	if(argc < 2)
 	{
-		printf("Grep failed.\ngrep pattern [filename]\n");
-		return -1;
+		printf("Grep Pattern failed.\ngrep pattern filename\n");
+		exit(1);
 	}
 	
-	if(argc >= 3)
+	if(argc > 2)
 	{
-		fd = open(argv[2], O_RDONLY);
+		in = 1;
+		close(0);
+		stdin = open(argv[2], O_RDONLY);
 	}
 	
-	if(fd < 0) { printf("File failed to open\n"); }
+	if(stdin < 0) { printf("File failed to open\n"); exit(1); }
+	
+	red = isRedirect();
+	
+	strcpy(inBuf, "");
 	
 	strcpy(pattern, argv[1]);
+	
+	while((n = getLine(stdin, inBuf, LARGE_BUF)) && passOver)
+	{	
+		if(n == 0) { passOver = 0; }
+		else { passOver = 1; }
 		
-	while(!strstr(inBuf, 26) && n >= 0)
-	{
-		strcpy(inBuf, "");
-		
-		n = getLine(fd, inBuf, LARGE_BUF);
-		
-		//to end early, use a tilde
-		if(strstr(inBuf, "~")) { return 0; }
-				 
 		if(strstr(inBuf, pattern))
 		{
-			printf("%s\n", inBuf);
+			for(i = 0; i < n && i < LARGE_BUF; i++)
+			{
+				writeOver(inBuf[i], in, red);
+			}
+			
+			writeOver('\n', in, red);
 		}
 	}
-	
-	return 0;
+		
+	exit(1);
 }

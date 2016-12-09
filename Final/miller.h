@@ -25,11 +25,16 @@ extern int stdout;
 char convert(char input);
 
 int executeInput(char *args[]);
+int executePipe(char *args[]);
 
 int splitCmd(char *arr[], char *cmd);
 char *combine(char **args);
-char *redirectCombine(char **args, int n);
+
+char *redirectCombine(char **args);
 int redirect(char *args[]);
+
+int hasPipe(char *args[]);
+char *trimN(char *s);
 
 void writeOver(char c, int in, int red);
 
